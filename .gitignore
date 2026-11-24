@@ -4,3 +4,4 @@ reports/
 *.txt
 *.json
 .env
+*.pyc
