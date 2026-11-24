@@ -103,6 +103,43 @@ def get_term_width() -> int:
         return 80
 
 
+def save_audit_report(category: str, target: str, findings: dict) -> str:
+    import json, re, time
+    from pathlib import Path
+    out_dir = Path("/root/coder4silnt-reports")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    ts = time.strftime("%Y%m%d_%H%M%S")
+    safe_target = re.sub(r"[^A-Za-z0-9._-]+", "_", target.strip())[:40] or "target"
+    base_name = f"{category}_{safe_target}_{ts}"
+    payload = {"timestamp": ts, "category": category, "target": target, "mode": "non-intrusive-posture-audit", "findings": findings}
+    json_file = out_dir / f"{base_name}.json"
+    txt_file = out_dir / f"{base_name}.txt"
+    json_file.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    lines = ["CODER4SILNT AUDIT REPORT", f"Timestamp : {ts}", f"Category  : {category}", f"Target    : {target}", "-" * 44]
+    for k, v in findings.items():
+        lines.append(f"{k}: {v}")
+    txt_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return str(txt_file)
+
+def inspect_apk_summary(apk_path_str: str) -> dict:
+    import zipfile
+    from pathlib import Path
+    apk_path = Path(apk_path_str.strip())
+    if not apk_path.is_file():
+        return {"error": f"APK file not found: {apk_path}"}
+    summary = {"file_size_bytes": apk_path.stat().st_size, "entries_count": 0, "has_manifest": False, "has_classes_dex": False, "suspicious_keywords_in_names": []}
+    try:
+        with zipfile.ZipFile(apk_path, "r") as zf:
+            names = zf.namelist()
+            summary["entries_count"] = len(names)
+            summary["has_manifest"] = "AndroidManifest.xml" in names
+            summary["has_classes_dex"] = any(n.startswith("classes") and n.endswith(".dex") for n in names)
+            toks = ("config", "secret", "debug", "test", "cert")
+            summary["suspicious_keywords_in_names"] = [n for n in names if any(t in n.lower() for t in toks)][:15]
+    except Exception as exc:
+        summary["archive_error"] = str(exc)
+    return summary
+
 def print_alpha_header() -> None:
     import base64
     e = chr(27)
