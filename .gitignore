@@ -1,7 +1,5 @@
 __pycache__/
 *.py[cod]
 reports/
-*.txt
-*.json
+*.log
 .env
-*.pyc

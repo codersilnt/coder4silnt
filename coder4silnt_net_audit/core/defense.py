@@ -1,0 +1,16 @@
+SERVICE_DEFENSE_NOTES = {
+    21: ("FTP", "Disable plain FTP; use SFTP/FTPS and enforce strong auth."),
+    22: ("SSH", "Use SSH keys, disable root login, and restrict source IPs."),
+    23: ("Telnet", "Disable Telnet completely; use encrypted SSH."),
+    53: ("DNS", "Restrict recursive queries to trusted clients and patch DNS."),
+    80: ("HTTP", "Enforce HTTPS/TLS, update firmware, and change default creds."),
+    135: ("MSRPC", "Block RPC exposure across untrusted segments via firewall."),
+    139: ("NetBIOS", "Disable legacy NetBIOS/SMBv1 when unused and restrict access."),
+    443: ("HTTPS", "Enforce modern TLS, valid certificates, and updated builds."),
+    445: ("SMB", "Disable SMBv1, require SMB signing, and isolate shares."),
+    554: ("RTSP", "Enforce strong auth, update camera/NVR firmware, segment IoT."),
+    1883: ("MQTT", "Enable TLS and authentication; block anonymous access."),
+    8080: ("HTTP-Alt", "Audit admin/proxy panels, restrict access, and patch."),
+    8443: ("HTTPS-Alt", "Harden management interfaces and keep services updated."),
+    9100: ("JetDirect/Print", "Restrict printer ports to authorized internal hosts."),
+}
