@@ -1,0 +1,2 @@
+# CODER4SILNT relies primarily on the Python 3 standard library.
+# Add optional third-party packages below only if needed by your environment.
