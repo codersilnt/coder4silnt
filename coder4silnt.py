@@ -106,7 +106,7 @@ def get_term_width() -> int:
 def save_audit_report(category: str, target: str, findings: dict) -> str:
     import json, re, time
     from pathlib import Path
-    out_dir = Path("/root/coder4silnt-reports")
+    out_dir = Path("./reports")
     out_dir.mkdir(parents=True, exist_ok=True)
     ts = time.strftime("%Y%m%d_%H%M%S")
     safe_target = re.sub(r"[^A-Za-z0-9._-]+", "_", target.strip())[:40] or "target"
