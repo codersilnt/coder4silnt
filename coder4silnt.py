@@ -140,6 +140,23 @@ def inspect_apk_summary(apk_path_str: str) -> dict:
         summary["archive_error"] = str(exc)
     return summary
 
+
+def _coder4silnt_post_scan_hook(choice: str, target: str = "", extra: dict | None = None) -> None:
+    c = str(choice).strip()
+    if c not in ("5", "6"):
+        return
+    findings = {"status": "completed", "option": c}
+    if extra and isinstance(extra, dict):
+        findings.update(extra)
+    t = (target or "").strip()
+    if c == "5" and t.lower().endswith(".apk"):
+        findings["apk_summary"] = inspect_apk_summary(t)
+    try:
+        saved_path = save_audit_report(f"opt_{c}", t or "local_scan", findings)
+        print(f"\n[+] Report saved: {saved_path}")
+    except Exception as exc:
+        print(f"\n[!] Report save note: {exc}")
+
 def print_alpha_header() -> None:
     import base64
     e = chr(27)
